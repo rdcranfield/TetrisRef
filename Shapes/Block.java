@@ -35,13 +35,14 @@ public abstract class Block{
 
     public abstract boolean canDrop(int[][] a, int Row, int Column);
 
-    public abstract boolean canRightLeftMove(int[][] a, int Row, int Column);
+    public abstract boolean canRightLeftMove(int Row, int Column);
 
     public abstract boolean canRotate(int[][] a, int Row, int Column);
     public abstract void rotate(int[][] a, int Row, int Column);
     
-    public abstract int getRow();
+    //public abstract int getRow();
     
     public abstract int getRotate();
+    public abstract int getDropRow(int currentDroppingRow);
 
 }

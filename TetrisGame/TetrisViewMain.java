@@ -18,30 +18,24 @@ import java.util.Random;
 // Public init method implements the testing of the TetrisView component via 
 // TetrisView tv = newTetrisView(a) and is added to the panel by the add(tv, borderLayout.CENTER)
 public class TetrisViewMain extends JApplet {
-    public void init(){
+	private static final long serialVersionUID = 7933907317239276340L;
+
+	public void init(){
         // test the view component
         Random r = new Random();
         int w = 10;
         int h = 20;
         int[][] a = new int[w][h];
-        //int[][]array = new int[w][h];
-        for (int i = 0; i < w; i++) {
-            for (int j = h/2; j < h; j++) {
-            }
-
-        }
-        TetrisView tv = new TetrisView(a);
+        String name = "Danny Cranfield";
+        String regno = "1004888";
+        TetrisView tv = new TetrisView(a,new StudentPlayer(name, regno));
         add(tv, BorderLayout.CENTER);
-        getContentPane().add(TetrisView.HighScore, BorderLayout.EAST);
-        getContentPane().add(TetrisView.name, BorderLayout.NORTH);
-        getContentPane().add(TetrisView.gameOver, BorderLayout.SOUTH);
+        getContentPane().add(TetrisView.getStats().getHighScore(), BorderLayout.EAST);
+        getContentPane().add(TetrisView.getStats().getName(), BorderLayout.NORTH);
+        getContentPane().add(TetrisView.getStats().getGameMessage(), BorderLayout.SOUTH);
         setSize(255, 440);
-        //pack();
         this.setVisible(true);
-        //setDefaultCloseOperation(EXIT_ON_CLOSE);
         repaint();
-
-        //new JEasyFrame(tv, "Danny Cranfield : 1004888");
     }
 
 }
