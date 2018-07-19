@@ -1,6 +1,10 @@
 package TetrisGame;
 
 import javax.swing.*;
+
+import Shapes.Grid;
+import Shapes.IGrid;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -25,10 +29,10 @@ public class TetrisViewMain extends JApplet {
         Random r = new Random();
         int w = 10;
         int h = 20;
-        int[][] a = new int[w][h];
+        IGrid grid = new Grid(w, h);
         String name = "Danny Cranfield";
         String regno = "1004888";
-        TetrisView tv = new TetrisView(a,new StudentPlayer(name, regno));
+        TetrisView tv = new TetrisView(grid,new StudentPlayer(name, regno));
         add(tv, BorderLayout.CENTER);
         getContentPane().add(TetrisView.getStats().getHighScore(), BorderLayout.EAST);
         getContentPane().add(TetrisView.getStats().getName(), BorderLayout.NORTH);

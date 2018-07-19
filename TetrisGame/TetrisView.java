@@ -3,6 +3,7 @@ package TetrisGame;
 import javax.swing.*;
 
 import Shapes.Block;
+import Shapes.IGrid;
 import Shapes.JBlock;
 import Shapes.LBlock;
 import Shapes.LineBlock;
@@ -38,7 +39,7 @@ public class TetrisView extends JComponent {
     public boolean isCanMoveLeft() {
 		return canMoveLeft;
 	}
-    static int[][] a;
+    
     int w, h;
     static int size = 20;
     Random r = new Random();
@@ -71,11 +72,11 @@ public class TetrisView extends JComponent {
     };
     int randomIndex = r.nextInt(randomPoolOfBlocks.length);
     Block block = randomPoolOfBlocks[randomIndex];
+	private IGrid board;
 	
-    public TetrisView(int[][] a, StudentPlayer player) {
-        this.a = a;
-        w = a.length;
-        h = a[0].length;
+    public TetrisView(IGrid board, StudentPlayer player) {
+        this.board = board;
+    
         currentDroppingColumn = 4;
         currentDroppingRow = 0;
         endCurrentDroppingRows = 19;
@@ -90,9 +91,9 @@ public class TetrisView extends JComponent {
  
     public void paintComponent(Graphics g) {
         super.paintComponents(g);
-        for (int i = 0; i < w; i++) {
-            for (int j = 0; j < h; j++) {
-                g.setColor(tblock_colors[a[i][j]]);
+        for (int i = 0; i < board.getWidth(); i++) {
+            for (int j = 0; j < board.getHeight(); j++) {
+                g.setColor(tblock_colors[board.getGrid()[i][j]]);
                 g.fill3DRect(i * size, j * size, size, size, true);
             }
         }
@@ -108,13 +109,13 @@ public class TetrisView extends JComponent {
                 try {
                     if (game_going) {;
                         if(block.canRightLeftMove(currentDroppingRow, currentDroppingColumn)){
-	                        if (block.canDrop(a, currentDroppingRow, currentDroppingColumn)) {	
+	                        if (block.canDrop(board.getGrid(), currentDroppingRow, currentDroppingColumn)) {	
 	                            dropDown(); //this makes the block drop a line	                           
 	                        } else {
 	                        	resetBlockPositions();
 	                            // need to drop a new one.
 	                            newPiece();	
-	                            if (isGameOver(a, currentDroppingRow, currentDroppingColumn)) {
+	                            if (isGameOver(board.getGrid(), currentDroppingRow, currentDroppingColumn)) {
 	                            	gameOver(timer);	                               
 	                            }
 	                        }
@@ -151,14 +152,14 @@ public class TetrisView extends JComponent {
             //called when mouse button is pressed while mouse cursor is on component
             if (e.getButton() == MouseEvent.BUTTON3) {  //right mouse button
                 //move currently active right
-                block.clearOnBoard(a, currentDroppingRow, currentDroppingColumn);
+                block.clearOnBoard(board.getGrid(), currentDroppingRow, currentDroppingColumn);
                 currentDroppingRow++;
             } else if (e.getButton() == MouseEvent.BUTTON2) {   //middle mouse button
-                block.clearOnBoard(a, currentDroppingRow, currentDroppingColumn);          
-                block.rotate(a, currentDroppingRow, currentDroppingColumn);
+                block.clearOnBoard(board.getGrid(), currentDroppingRow, currentDroppingColumn);          
+                block.rotate(board.getGrid(), currentDroppingRow, currentDroppingColumn);
                 //rotate currently active by 90 degrees
             } else { 
-                block.clearOnBoard(a, currentDroppingRow, currentDroppingColumn);
+                block.clearOnBoard(board.getGrid(), currentDroppingRow, currentDroppingColumn);
                 currentDroppingRow--;
             }
         }
@@ -176,7 +177,7 @@ public class TetrisView extends JComponent {
 
     private boolean fullLine(int r) {
         for (int c = 0; c < 10; c++) {
-            if (a[c][r] == 0) {
+            if (board.getGrid()[c][r] == 0) {
                 return false;
             }
         }
@@ -188,12 +189,11 @@ public class TetrisView extends JComponent {
             if (fullLine(r)) {         	         
                 for (int j = r-1 ; j > 0; j--) {
                     for (int c = 0; c < 10; c++) {
-                        a[c][j+1] = a[c][j];
+                    	board.getGrid()[c][j+1] = board.getGrid()[c][j];
                     }
                 }
                 r++;
-                block.clearOnBoard(a, currentDroppingRow, currentDroppingColumn);
-              
+                block.clearOnBoard(board.getGrid(), currentDroppingRow, currentDroppingColumn);
                 updateScore();
                 updateTotalLines();
             }
@@ -214,16 +214,16 @@ public class TetrisView extends JComponent {
         int randomIndex = r.nextInt(randomPoolOfBlocks.length);
         block = randomPoolOfBlocks[randomIndex];
         canMoveLeft = true;
-        block.drawOnBoard(a, currentDroppingRow, currentDroppingColumn);
+        block.drawOnBoard(board.getGrid(), currentDroppingRow, currentDroppingColumn);
         game_going = true;
     }
 
 	// call to clear previous position of the block while it drops at fixed intervals by incrementing 
 	// currentDroppingColumn while the drawOnBoard method draws the shape on the grid as it drops at fixed intervals. 
     public void dropDown() {
-        block.clearOnBoard(a, currentDroppingRow, currentDroppingColumn);
+        block.clearOnBoard(board.getGrid(), currentDroppingRow, currentDroppingColumn);
         currentDroppingColumn++;
-        block.drawOnBoard(a, currentDroppingRow, currentDroppingColumn);
+        block.drawOnBoard(board.getGrid(), currentDroppingRow, currentDroppingColumn);
         removelines();
     }
 
