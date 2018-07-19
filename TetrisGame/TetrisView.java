@@ -38,25 +38,22 @@ public class TetrisView extends JComponent {
     public boolean isCanMoveLeft() {
 		return canMoveLeft;
 	}
+    static int[][] a;
+    int w, h;
+    static int size = 20;
+    Random r = new Random();
 
-	static int count = 0;
-    static int count1 = 0;
-   
-    static boolean game_over;
+	int score = 0;
+    int linesMatched = 0;
+    boolean game_over;
+    
     boolean hasBlockFallen;
     MouseHandler handler = new MouseHandler();
    
-    static int[][] a;
-    int w, h;
-    Random r = new Random();
-    int randomR = this.r.nextInt(7) + 1;
-    static int[][] array;
-    static int size = 20;
     public static boolean game_going = true;
 
     int currentDroppingRow, currentDroppingColumn;
-    int endCurrentDroppingRows;
-    int endCurrentDroppingColumn;
+    int endCurrentDroppingRows, endCurrentDroppingColumn;
     static GameStats stats;  
 
     public static GameStats getStats() {
@@ -142,13 +139,11 @@ public class TetrisView extends JComponent {
 	protected void gameOver(Timer timer) {
 		 game_going = false;
          timer.cancel();
-         stats.getGameMessage().setText("Game Over! your score was " + String.valueOf(count));
-         stats.getHighScore().setText("Score: " + String.valueOf(count));
+         stats.getGameMessage().setText(Constants.endGameMsg + String.valueOf(score));
+         stats.getHighScore().setText(Constants.scoreTxt + String.valueOf(score));
 	}
 	
     public class MouseHandler implements MouseListener {
-        TetrisView tv;
-
         public void mouseClicked(MouseEvent e) {
         }
         
@@ -198,15 +193,24 @@ public class TetrisView extends JComponent {
                 }
                 r++;
                 block.clearOnBoard(a, currentDroppingRow, currentDroppingColumn);
-                count = count + 10;
-                count1 = count1 + 1;
-                stats.getHighScore().setText("Score: " + String.valueOf(count));
-                stats.getGameMessage().setText("you filled up: " + String.valueOf(count1) + " lines!");
+              
+                updateScore();
+                updateTotalLines();
             }
         }
     }
  
-    public void newPiece() {
+    private void updateTotalLines() {
+    	linesMatched++;
+    	stats.getGameMessage().setText("you filled up: " + String.valueOf(linesMatched) + " lines!");
+	}
+
+	private void updateScore() {
+		score += 10;
+		stats.getHighScore().setText(Constants.scoreTxt + String.valueOf(score));
+	}
+
+	public void newPiece() {
         int randomIndex = r.nextInt(randomPoolOfBlocks.length);
         block = randomPoolOfBlocks[randomIndex];
         canMoveLeft = true;
